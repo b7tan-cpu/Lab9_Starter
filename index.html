@@ -90,18 +90,170 @@
   <script>
     let form = document.querySelector('form');
     form.addEventListener('submit', e => {
-      e.preventDefault();
-      let output = document.querySelector('output');
-      let firstNum = document.querySelector('#first-num').value;
-      let secondNum = document.querySelector('#second-num').value;
-      let operator = document.querySelector('#operator').value;
-      output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
-    });
+  e.preventDefault();
+
+  let output = document.querySelector('output');
+  let firstNum = Number(document.querySelector('#first-num').value);
+  let secondNum = Number(document.querySelector('#second-num').value);
+  let operator = document.querySelector('#operator').value;
+
+  try {
+    if (isNaN(firstNum) || isNaN(secondNum)) {
+      throw new CalculatorError("Both inputs must be valid numbers.");
+    }
+
+    if (operator === "/" && secondNum === 0) {
+      throw new CalculatorError("Cannot divide by zero.");
+    }
+
+    let result;
+
+    if (operator === "+") {
+      result = firstNum + secondNum;
+    } else if (operator === "-") {
+      result = firstNum - secondNum;
+    } else if (operator === "*") {
+      result = firstNum * secondNum;
+    } else if (operator === "/") {
+      result = firstNum / secondNum;
+    } else {
+      throw new CalculatorError("Invalid operator.");
+    }
+
+    output.innerHTML = result;
+    console.log("Calculation successful:", result);
+
+  } catch (error) {
+    output.innerHTML = "Error";
+    console.error(error.name + ":", error.message);
+
+  } finally {
+    console.log("Calculation attempt finished.");
+  }
+});
 
     let errorBtns = Array.from(document.querySelectorAll('#error-btns > button'));
 
     // Start your code here
     // You may move this JS to another file if you wish
+    // Global error handler
+window.onerror = function (message, source, lineno, colno, error) {
+  console.log("Global error caught by window.onerror");
+  console.log("Message:", message);
+  console.log("Source:", source);
+  console.log("Line:", lineno);
+  console.log("Column:", colno);
+  console.log("Error object:", error);
+
+  return false;
+};
+
+window.addEventListener("error", function (event) {
+  console.log("Global error caught by addEventListener:", event.message);
+});
+
+// Custom error class
+class CalculatorError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = "CalculatorError";
+  }
+}
+
+// Console Log
+errorBtns[0].addEventListener("click", function () {
+  console.log("This is a console.log demo.");
+});
+
+// Console Error
+errorBtns[1].addEventListener("click", function () {
+  console.error("This is a console.error demo.");
+});
+
+// Console Count
+errorBtns[2].addEventListener("click", function () {
+  console.count("Console Count button clicked");
+});
+
+// Console Warn
+errorBtns[3].addEventListener("click", function () {
+  console.warn("This is a console.warn demo.");
+});
+
+// Console Assert
+errorBtns[4].addEventListener("click", function () {
+  console.assert(2 + 2 === 5, "Assertion failed: 2 + 2 is not 5.");
+});
+
+// Console Clear
+errorBtns[5].addEventListener("click", function () {
+  console.clear();
+});
+
+// Console Dir
+errorBtns[6].addEventListener("click", function () {
+  console.dir(document.querySelector("form"));
+});
+
+// Console dirxml
+errorBtns[7].addEventListener("click", function () {
+  console.dirxml(document.querySelector("main"));
+});
+
+// Console Group Start
+errorBtns[8].addEventListener("click", function () {
+  console.group("Calculator Info");
+  console.log("First input:", document.querySelector("#first-num").value);
+  console.log("Operator:", document.querySelector("#operator").value);
+  console.log("Second input:", document.querySelector("#second-num").value);
+});
+
+// Console Group End
+errorBtns[9].addEventListener("click", function () {
+  console.log("Ending group.");
+  console.groupEnd();
+});
+
+// Console Table
+errorBtns[10].addEventListener("click", function () {
+  console.table([
+    { button: "Console Log", method: "console.log()" },
+    { button: "Console Error", method: "console.error()" },
+    { button: "Console Table", method: "console.table()" }
+  ]);
+});
+
+// Start Timer
+errorBtns[11].addEventListener("click", function () {
+  console.time("Timer Demo");
+  console.log("Timer started.");
+});
+
+// End Timer
+errorBtns[12].addEventListener("click", function () {
+  console.timeEnd("Timer Demo");
+});
+
+// Console Trace
+errorBtns[13].addEventListener("click", function () {
+  function firstFunction() {
+    secondFunction();
+  }
+
+  function secondFunction() {
+    console.trace("This is a console.trace demo.");
+  }
+
+  firstFunction();
+});
+
+// Trigger a Global Error
+errorBtns[14].addEventListener("click", function () {
+  let missingUser = null;
+
+  // This causes a real global error
+  console.log(missingUser.name);
+});
   </script>
 </body>
 
